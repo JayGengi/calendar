@@ -15,7 +15,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
+/**
+ * 自定义日历
+ * author: JayGengi 60167
+ * email:  gengy@chinaraising.com
+ * time:  2017/11/14 14:44
+ */
 public class CalendarActivity extends AppCompatActivity implements View.OnClickListener{
     public static CalendarActivity instance = null;
 
@@ -25,12 +30,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
     private ImageView mLastMonthView;
     private ImageView mNextMonthView;
     private CalendarView mCalendarView;
-    /**
-     * 自定义日历
-     * author: JayGengi 60167
-     * email:  gengy@chinaraising.com
-     * time:  2017/11/14 14:44
-     */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
