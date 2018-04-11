@@ -1,5 +1,6 @@
 package com.jaygengi.calendar.tools;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -121,77 +122,59 @@ public class CalendarView extends View {
         setSelYTD(mCurYear, mCurMonth, mCurDate);
 
         // 获取背景Bitmap
-        mBgOptBitmap    = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_calendar_day_ischoose);
-        mBgNotOptBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_calendar_day_isnotchoose);
+        mBgOptBitmap    = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_setting_price_blue);
+        mBgNotOptBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_setting_price_black);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-
-        Long draw = System.currentTimeMillis();
-
 //        if(!isInit){
             initSize();
-
             // 绘制背景
             mPaint.setColor(mBgColor);
             //设置文本剧中
             mPaint.setTextAlign(Paint.Align.CENTER);
             canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), mPaint);
-
             mDays = new int[6][7];
             // 设置绘制字体大小
             mPaint.setTextSize(mDayTextSize * mMetrics.scaledDensity);
             // 设置绘制字体颜色
-
-
             // 获取当月一共有多少天
             mMonthDays = DateUtils.getMonthDays(mSelYear, mSelMonth);
             // 获取当月第一天位于周几
             mWeekNumber = DateUtils.getFirstDayWeek(mSelYear, mSelMonth);
 //        }
-
-//        Long drawEnd = System.currentTimeMillis();
-//
 //        Logger.t("draw").d(drawEnd-draw+"");
-
-
-        Long forTime = System.currentTimeMillis();
-
         for(int day = 0; day < mMonthDays; day++){
             String dayStr = String.valueOf(day + 1);
-
             int column  =  (day + mWeekNumber - 1) % 7;
             int row     =  (day + mWeekNumber - 1) / 7;
             mDays[row][column] = day + 1;
             String str = "";
             int startX = (int) (mColumnSize * column + (mColumnSize - mPaint.measureText(dayStr)) / 2);
             int startY = (int) (mRowSize * row + mRowSize / 2 - (mPaint.ascent() + mPaint.descent()) / 2);
-            // 判断当前天数是否不可选
-//            Log.d("JayGengi",getSelData(mSelYear, mSelMonth, mDays[row][column]));
             //读取的数据
             if(mOptionalDates!=null && mOptionalDates.size()>0){
 
                 SerPrice guideSerPrice  = mapOptionalDates.get(getSelData(mSelYear, mSelMonth, mDays[row][column]));
+                //今天之前日历时间置灰,不可点击
                 if(guideSerPrice!=null){
                     str = guideSerPrice.getSerPrice()+"";
-
-                if(guideSerPrice.getIsSaled()==1){
-                            canvas.drawBitmap(mBgNotOptBitmap, startX - (mBgNotOptBitmap.getWidth() / 2), startY - (mBgNotOptBitmap.getHeight() / 2), mPaint);
-                            mPaint.setColor(mDayNotOptColor);//mDayNormalColor
+                    if(guideSerPrice.isSelect()){
+                        canvas.drawBitmap(mBgNotOptBitmap, startX - (mBgNotOptBitmap.getWidth() / 2), startY - (mBgNotOptBitmap.getHeight() / 2), mPaint);
+                    }else{
+                        // 可选，继续判断是否是点击过的
+                        if(!mSelectedDates.contains(getSelData(mSelYear, mSelMonth, mDays[row][column]))){
+                            // 没有点击过，绘制默认背景
                         }else{
-//                            // 可选，继续判断是否是点击过的
-                            if(!mSelectedDates.contains(getSelData(mSelYear, mSelMonth, mDays[row][column]))){
-//                                // 没有点击过，绘制默认背景
-                            }else{
-                                // 点击过，绘制点击过的背景
-                                canvas.drawBitmap(mBgOptBitmap, startX - (mBgOptBitmap.getWidth() / 2), startY - (mBgOptBitmap.getHeight() / 2), mPaint);
-                                mPaint.setColor(mDayPressedColor);
-                            }
+                            // 点击过，绘制点击过的背景
+                            canvas.drawBitmap(mBgOptBitmap, startX - (mBgOptBitmap.getWidth() / 2), startY - (mBgOptBitmap.getHeight() / 2), mPaint);
+                            mPaint.setColor(mDayPressedColor);
                         }
+                    }
                 }else{
                     if(!mSelectedDates.contains(getSelData(mSelYear, mSelMonth, mDays[row][column]))){
-//                                // 没有点击过，绘制默认背景
+                        // 没有点击过，绘制默认背景
                     }else{
                         // 点击过，绘制点击过的背景
                         canvas.drawBitmap(mBgOptBitmap, startX - (mBgOptBitmap.getWidth() / 2), startY - (mBgOptBitmap.getHeight() / 2), mPaint);
@@ -230,7 +213,6 @@ public class CalendarView extends View {
             }
             // 绘制天数
             String price = dayStr+","+str;
-
             mPaint.setColor(mDayNotOptColor);
             for (String line: price.split(",")) {
                 //判断字符串是否包含.「小数点的形式存在于float价格中」
@@ -356,7 +338,7 @@ public class CalendarView extends View {
         this.mOptionalDates = dates;
 
         for(SerPrice serPrice : mOptionalDates){
-            mapOptionalDates.put(serPrice.getBeginDtStr(),serPrice);
+            mapOptionalDates.put(serPrice.getCalendarTime(),serPrice);
         }
 
         invalidate();

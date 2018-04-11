@@ -1,5 +1,6 @@
 package com.jaygengi.calendar.tools;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -56,15 +57,15 @@ public class DateUtils {
         return calendar.get(Calendar.DAY_OF_WEEK);
     }
     /**
-     *  计算当前明天的日期
-     *  create by gengy 60167
-     *  at  2017/2/19 11:09
+     * 【转换日期】根据传入Date日期转换为Strin格式
+     * @author gengy 2018-04-11
+     * @param date 用户传入的Date格式日期
+     * @param datePattern 转换格式(默认yyyy-MM-dd HH:mm:ss)
+     * @return 返回转换后的字符串日期
      */
-    private Date getNextDay(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.DAY_OF_MONTH, +1);//+1今天的时间加一天
-        date = calendar.getTime();
-        return date;
+    public static final String getDateStr(Date date,String datePattern){
+        SimpleDateFormat df;
+            df = new SimpleDateFormat(datePattern);
+        return df.format(date);
     }
 }
