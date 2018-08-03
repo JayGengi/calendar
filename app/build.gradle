@@ -1,14 +1,13 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
     defaultConfig {
-        applicationId "com.jaygengi.calendar"
-        minSdkVersion 15
-        targetSdkVersion 26
+        minSdkVersion 18
+        targetSdkVersion 27
         versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        versionName "0.0.1"
     }
     buildTypes {
         release {
@@ -20,9 +19,25 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+}
+
+
+Properties properties = new Properties()
+// 加载本地配置
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+publish {
+    userOrg = 'jaygengiii'
+//    repoName = 'jaygengi'
+    groupId = 'com.jaygengi'
+    artifactId = 'jCalendar'
+    publishVersion = '0.0.1'
+    licences = ['Apache-2.0']
+    uploadName = 'jCalendar'
+    desc = '自定义日历控件【带价格、可选、不可选】'
+    website = 'https://github.com/JayGengi/calendar'
+    bintrayUser = properties.getProperty("bintray.user")
+    bintrayKey = properties.getProperty("bintray.apikey")
+    dryRun = false
 }
